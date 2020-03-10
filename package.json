@@ -1,0 +1,63 @@
+{
+  "_from": "@router360/react-native-vungle@^1.0.0",
+  "_id": "@router360/react-native-vungle@1.0.1",
+  "_inBundle": false,
+  "_integrity": "sha512-PMdwjLb4dR9OGJp/kVk7VndN+aEXvcMJ1kayBRRkW3sxVQZa+tfYIoS5lG6X4RzPt15LuAnDNl9uL321pTqL+Q==",
+  "_location": "/@router360/react-native-vungle",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "@router360/react-native-vungle@^1.0.0",
+    "name": "@router360/react-native-vungle",
+    "escapedName": "@router360%2freact-native-vungle",
+    "scope": "@router360",
+    "rawSpec": "^1.0.0",
+    "saveSpec": null,
+    "fetchSpec": "^1.0.0"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/@router360/react-native-vungle/-/react-native-vungle-1.0.1.tgz",
+  "_shasum": "7fb0daf3a2c3a574b0470509a4da9aeea4ca3b7e",
+  "_spec": "@router360/react-native-vungle@^1.0.0",
+  "_where": "C:\\Users\\ANGELO\\Documents\\TestApps\\cryptowin",
+  "author": {
+    "name": "Your Name",
+    "email": "yourname@email.com"
+  },
+  "bugs": {
+    "url": "https://github.com/github_account/react-native-rn-vungle/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "TODO",
+  "devDependencies": {
+    "react": "^16.9.0",
+    "react-native": "^0.61.5"
+  },
+  "homepage": "https://github.com/github_account/react-native-rn-vungle#readme",
+  "keywords": [
+    "react-native"
+  ],
+  "license": "MIT",
+  "licenseFilename": "LICENSE",
+  "main": "index.js",
+  "name": "@router360/react-native-vungle",
+  "peerDependencies": {
+    "react": "^16.8.1",
+    "react-native": ">=0.60.0-rc.0 <1.0.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/github_account/react-native-rn-vungle.git",
+    "baseUrl": "https://github.com/github_account/react-native-rn-vungle"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "title": "React Native Vungle",
+  "version": "1.0.1"
+}
