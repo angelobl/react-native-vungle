@@ -4,6 +4,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Callback;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Promise;
 
 import com.vungle.warren.Vungle;
 import com.vungle.warren.AdConfig; // Custom ad configurations
@@ -17,38 +21,35 @@ import com.vungle.warren.Vungle.Consent; // GDPR consent
 import com.vungle.warren.VungleSettings; // Minimum disk space
 import com.vungle.warren.error.VungleException; // onError message
 
-
-
 public class RnVungleModule extends ReactContextBaseJavaModule {
 
-    
-
     private final ReactApplicationContext reactContext;
-
-    
 
     public RnVungleModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
     }
 
-    VungleSettings vungleSettings = new VungleSettings.Builder()
-    .setAndroidIdOptOut(true)
-    .build();
+    VungleSettings vungleSettings = new VungleSettings.Builder().setAndroidIdOptOut(true).build();
 
-    
+    private void sendEvent(ReactApplicationContext context, String eventName, final WritableMap params) {
+        context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, params);
+    }
 
-    private void initVungle(final String appId,final Callback callback) {
-
+    private void initVungle(final String appId) {
+        final WritableMap params1 = Arguments.createMap();
+        final WritableMap params2 = Arguments.createMap();
         Vungle.init(appId, reactContext.getApplicationContext(), new InitCallback() {
             @Override
             public void onSuccess() {
-                callback.invoke("SDK Success");
+                params1.putBoolean("sdkLoaded", true);
+                sendEvent(reactContext, "Event", params1);
             }
 
             @Override
             public void onError(VungleException e) {
-                callback.invoke("SDK Error: " + e.getLocalizedMessage());
+                params2.putBoolean("sdkError", true);
+                sendEvent(reactContext, "Event", params1);
             }
 
             @Override
@@ -59,79 +60,99 @@ public class RnVungleModule extends ReactContextBaseJavaModule {
                 // please use
                 // LoadAdCallback with loadAd API for loading placements.
             }
-        },vungleSettings);
+        }, vungleSettings);
     }
 
-    private void innerLoadAds(final String placementId,final Callback callback) {
+    private void innerLoadAds(final String placementId) {
+        final WritableMap params1 = Arguments.createMap();
+        final WritableMap params2 = Arguments.createMap();
         // Load Ad Implementation
         if (Vungle.isInitialized()) {
-        Vungle.loadAd(placementId, new LoadAdCallback() {
-        @Override
-        public void onAdLoad(String placementReferenceId) {
-            callback.invoke("Ad loaded");
-         }
-  
-        @Override
-        public void onError(String placementReferenceId, VungleException e) {
-            callback.invoke("SDK Error: " + e.getLocalizedMessage());
-         }
-    });
-  }
+            Vungle.loadAd(placementId, new LoadAdCallback() {
+                @Override
+                public void onAdLoad(String placementReferenceId) {
+                    params1.putBoolean("adLoaded", true);
+                    sendEvent(reactContext, "Event", params1);
+                }
+
+                @Override
+                public void onError(String placementReferenceId, VungleException e) {
+                    params2.putBoolean("adLoadError", true);
+                    sendEvent(reactContext, "Event", params1);
+                }
+            });
+        }
     }
 
-    private void innerShowAds(final String placementId,final String userId,final String appId,final Callback callback) {
+    private void innerShowAds(final String placementId, final String userId, final String appId) {
+        final WritableMap params1 = Arguments.createMap();
+        final WritableMap params2 = Arguments.createMap();
+        final WritableMap params3 = Arguments.createMap();
         AdConfig adConfig = new AdConfig();
         adConfig.setAdOrientation(AdConfig.AUTO_ROTATE);
         adConfig.setMuted(true);
-        adConfig.setBackButtonImmediatelyEnabled(true);
         Vungle.setIncentivizedFields(userId, "RewardedTitle", "RewardedBody", "RewardedKeepWatching", "RewardedClose");
-        //adConfig.setIncentivizedUserId(userId);
-        if (Vungle.canPlayAd(placementId)) { 
-            Vungle.playAd(placementId, adConfig, new PlayAdCallback() { 
-              @Override public void onAdStart(String placementReferenceId) { 
-                //callback.invoke("Ad started");
-              } 
-              @Override public void onAdEnd(String placementReferenceId, boolean completed, boolean isCTAClicked) { 
-                callback.invoke("Ad ended");
-              } 
-              @Override public void onError(String placementReferenceId, VungleException e) {
-                if (e.getExceptionCode() == VungleException.VUNGLE_NOT_INTIALIZED) {
-                    // Re-initialize Vungle SDK
-                    initVungle(appId,callback);
-                  }
-               } 
+
+        if (Vungle.canPlayAd(placementId)) {
+
+            Vungle.playAd(placementId, adConfig, new PlayAdCallback() {
+                @Override
+                public void onAdStart(String placementReferenceId) {
+                    params1.putBoolean("adStarted", true);
+                    sendEvent(reactContext, "Event", params1);
+                }
+
+                @Override
+                public void onAdEnd(String placementReferenceId, boolean completed, boolean isCTAClicked) {
+                    params2.putBoolean("adEnded", true);
+                    sendEvent(reactContext, "Event", params2);
+                }
+
+                @Override
+                public void onError(String placementReferenceId, VungleException e) {
+                    if (e.getExceptionCode() == VungleException.VUNGLE_NOT_INTIALIZED) {
+                        // Re-initialize Vungle SDK
+                        initVungle(appId);
+                    }
+                }
             });
-          }
-    }
-
-
-
-    @ReactMethod
-    public void loadAds(final String placementId,final Callback callback) {
-        innerLoadAds(placementId, callback);
-    }
-
-    @ReactMethod
-    public void showAds(final String placementId,final String userId,final String appId,final Callback callback) {
-        
-        innerShowAds(placementId,userId,appId,callback);
-    }
-
-   
-
-    @ReactMethod
-    public void isInitialized(final Callback callback) {
-        if (Vungle.isInitialized() == true) {
-            callback.invoke("Initialized true");
         } else {
-            callback.invoke("Initialized false");
+            params3.putBoolean("showAdsError", true);
+            sendEvent(reactContext, "Event", params1);
         }
 
     }
 
     @ReactMethod
-    public void init(final String appid,final Callback callback) {
-        initVungle(appid, callback);
+    public void loadAds(final String placementId) {
+        innerLoadAds(placementId);
+    }
+
+    @ReactMethod
+    public void showAds(final String placementId, final String userId, final String appId) {
+
+        innerShowAds(placementId, userId, appId);
+
+    }
+
+    @ReactMethod
+    public void isInitialized(Promise promise) {
+        final WritableMap params = Arguments.createMap();
+        try {
+            if (Vungle.isInitialized() == true) {
+                promise.resolve(true);
+            } else {
+                promise.resolve(false);
+            }
+        } catch (Exception e) {
+            promise.reject("Error", e);
+        }
+
+    }
+
+    @ReactMethod
+    public void init(final String appid) {
+        initVungle(appid);
     }
 
     @Override
