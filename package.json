@@ -29,7 +29,7 @@
     "email": "yourname@email.com"
   },
   "bugs": {
-    "url": "https://github.com/github_account/react-native-rn-vungle/issues"
+    "url": "https://github.com/angelobl/react-native-vungle/issues"
   },
   "bundleDependencies": false,
   "deprecated": false,
@@ -38,7 +38,7 @@
     "react": "^16.9.0",
     "react-native": "^0.61.5"
   },
-  "homepage": "https://github.com/github_account/react-native-rn-vungle#readme",
+  "homepage": "https://github.com/angelobl/react-native-vungle#readme",
   "keywords": [
     "react-native"
   ],
@@ -52,12 +52,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/github_account/react-native-rn-vungle.git",
-    "baseUrl": "https://github.com/github_account/react-native-rn-vungle"
+    "url": "git+https://github.com/angelobl/react-native-vungle.git",
+    "baseUrl": "https://github.com/angelobl/react-native-vungle"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "title": "React Native Vungle",
-  "version": "1.0.1"
+  "version": "1.0.2"
 }
