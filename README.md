@@ -1,4 +1,4 @@
-# react-native-rn-vungle
+# @router360/react-native-vungle
 
 ## Getting started
 
