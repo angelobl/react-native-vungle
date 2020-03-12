@@ -10,7 +10,7 @@
 
 ## Usage
 ```javascript
-import RnVungle from 'react-native-rn-vungle';
+import RnVungle from '@router360/react-native-vungle';
 
 // TODO: What to do with the module?
 RnVungle;
