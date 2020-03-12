@@ -2,11 +2,11 @@
 
 ## Getting started
 
-`$ npm install react-native-rn-vungle --save`
+`$ npm install @router360/react-native-vungle --save`
 
 ### Mostly automatic installation
 
-`$ react-native link react-native-rn-vungle`
+`$ react-native link @router360/react-native-vungle`
 
 ## Usage
 ```javascript
